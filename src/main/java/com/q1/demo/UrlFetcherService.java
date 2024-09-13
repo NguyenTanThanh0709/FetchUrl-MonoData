@@ -27,11 +27,11 @@ public class UrlFetcherService {
             try {
                 Object response = fetchDataFromUrl(url, previousResponse);
                 responses.add(response);
-                previousResponse = response;  // Set response for the next URL
+                previousResponse = response;
             } catch (Exception e) {
                 logger.error("Error fetching data from URL: " + url, e);
-                responses.add(null);  // Add null in case of error
-                previousResponse = null;  // Set null for the next request
+                responses.add(null);
+                previousResponse = null;
             }
         }
         return responses;
@@ -40,16 +40,16 @@ public class UrlFetcherService {
     private Object fetchDataFromUrl(String url, Object previousResponse) {
         return webClient.post()
                 .uri(url)
-                .body(Mono.justOrEmpty(previousResponse), Object.class)  // Send previous response as part of the request
+                .body(Mono.justOrEmpty(previousResponse), Object.class)
                 .retrieve()
                 .bodyToMono(Object.class)
-                .block();  // Blocking call to ensure sequential execution
+                .block();
     }
 
     public Mono<List<Object>> fetchUrlsConcurrently(List<String> urls) {
         // Sử dụng Flux để xử lý các URLs đồng thời
         return Flux.fromIterable(urls)
-                .flatMap(this::fetchDataFromUrl)  // Gọi từng URL đồng thời
+                .flatMap(this::fetchDataFromUrl)
                 .collectList();  // Thu thập kết quả thành List
     }
 
